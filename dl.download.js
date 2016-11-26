@@ -64,7 +64,7 @@ dl.download({
 		/* fix for Firefox gecko */
 		body.appendChild(link);
 		link.click();
-		//body.removeChild(link);
+		body.removeChild(link);
 	},
 	download = dl.download = function(url,callback,progress,name){
 		if(is_object(url)){
