@@ -41,11 +41,11 @@ app.run(['$rootScope',function($rootScope){
 		}, 
 		runOptions = {}, args = [], callback = function(success,filename,url){
 			args = arguments;
-			if(!hide)delayt.run(runOptions.delay);
+			if(s.loading)delayt.run(runOptions.delay);
 			return success;
 		},
-		hide = 1, progress = function(e){
-			if(hide)return;
+		progress = function(e){
+			if(!s.loading)return;
 			console.log( 'Получено с сервера ' + e.loaded + ' байт' + 
 			(e.lengthComputable ? (' из ' + e.total) : '. Общий объем неизвестен' ) );
 			
@@ -70,12 +70,11 @@ app.run(['$rootScope',function($rootScope){
 			callback: function(){callb.apply(null,args);}
 		}),
 		waitt = new dl.Timeout({ 
-			callback: function(){hide = 0;} 
+			callback: function(){ s.loading = 1;} 
 		});	
 		s.run = function(options){
 			runOptions = objectval(options);
 			cancel();
-			s.loading = 1;
 			dst.total = 10000;
 			var src = objectval(s.src);
 			waitt.run(runOptions.wait);
