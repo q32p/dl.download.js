@@ -1,12 +1,19 @@
 # dl.download.js
 
 Plagin: dl.download.js
+
 Version: 1.0
+
 Extension for: dl.js
+
 Used extensions: none
+
 Author: Absalyamov Amir Nailevich
+
 Email: mr.amirka@ya.ru
+
 Websites: 
+
   dartline.ru
 	vk.com/mr.amirka
 Date: 2016-11-26T01:27:00+03:00
