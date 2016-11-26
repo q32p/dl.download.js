@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru-RU" ng-app="app">
+<head>
+	<base href="[[++site_url]]" />
+	<meta charset="utf-8"/>
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimal-ui"/>
+	<meta http-equiv="Content-Script-Type" content="text/javascript"/>
+	<meta http-equiv="Content-Style-Type" content="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="resource-type" content="document"/>
+	<meta name="document-state" content="Dynamic"/>
+	<title>dl.download.js demo</title>
+	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css"/>
+	<script type="text/less">
+.mix(@n,@v){-webkit-@{n}:@v;-ms-@{n}:@v;-moz-@{n}:@v;-o-@{n}:@v;@{n}:@v;}
+.mixDuration(@sec:0.25s){.mix(transition-duration,@sec);}
+.mixProp(@name;@prop){
+    @{name}{@prop();}
+	@media(min-width:992px){@{name}-md{@prop();}}
+	@media(min-width:1200px){@{name}-lg{@prop();}}
+	@media(min-width:1600px){@{name}-ll{@prop();}}
+	@media(max-width:992px){@{name}-sm{@prop();}}
+	@media(max-width:768px){@{name}-xs{@prop();}}
+	@media(max-width:480px){@{name}-xm{@prop();}}
+	@media(max-width:320px){@{name}-mm{@prop();}}
+	@media print{@{name}-print{@prop();}}
+}
+.mixSide(@n,@p,@v){
+    .mixProp(~'.@{n}x',{@{p}top:@v;@{p}bottom:@v;@{p}left:@v;@{p}right:@v;});
+    .mixProp(~'.@{n}',{@{p}top:@v;@{p}bottom:@v;});
+    .mixProp(~'.@{n}h',{@{p}left:@v;@{p}right:@v;});
+    .mixProp(~'.@{n}t',{@{p}top:@v;});
+    .mixProp(~'.@{n}b',{@{p}bottom:@v;});
+    .mixProp(~'.@{n}l',{@{p}left:@v;});
+    .mixProp(~'.@{n}r',{@{p}right:@v;});
+}
+.mixRow(@v){
+    .mixProp(~'.row@{v}',{
+        margin-left:~'-@{v}px'; margin-right:~'-@{v}px';
+    	&,&>*{&>[class*='col-']{padding-left:~'@{v}px';padding-right:~'@{v}px';}}
+    });
+}
+.mixTrans(@x,@y){.mix(transform,translate(@x,@y));}
+.mixf(@v,@f:radial-gradient,@n:background){	
+	@{n}:~`'-webkit-@{f}(@{v})'`;
+	@{n}:~`'-ms-@{f}(@{v})'`;
+	@{n}:~`'-moz-@{f}(@{v})'`;
+	@{n}:~`'-o-@{f}(@{v})'`;
+	@{n}:~`'@{f}(@{v})'`;
+}
+.mixFrames(@name; @frames) {
+	@-moz-keyframes @name { @frames(); }
+	@-webkit-keyframes @name { @frames(); }
+	@-ms-keyframes @name { @frames(); }
+	@-o-keyframes @name { @frames(); }
+	@keyframes @name { @frames(); }
+}
+.mixLinear(@v){.mixf(@v,linear-gradient,background);}
+.mixSelectNo{.mix(user-select,none);}
+.mixSelect{.mix(user-select,initial);}
+.mixEventNo{.mix(pointer-events,none);}
+.mixEvent{.mix(pointer-events,auto);}
+.mixPD(@v){.mixSide(~'pd@{v}',padding-,~'@{v}px');}
+.mixMG(@v){.mixSide(~'mg@{v}',margin-,~'@{v}px');}
+.mixFS(@i){.mixProp(~'.f@{i}',{font-size:~'@{i}px';});}
+.mixZ(@i){.mixProp(~'.z@{i}',{.mix(z-index,@i);});}
+.mixR(@v){.mixProp(~'.r@{v}',{.mix(border-radius,~'@{v}px');});}
+.mixAll(@b){&,&:active,&:hover,&:visited,&:focus{@b();}}
+.mixOpacity(@v){
+	@filter:@v * 100;
+	.mix(opacity,@v);
+	filter:Alpha(Opacity=@filter);
+}
+.hOpacity(@v){
+	.mixDuration(0.25s);
+	.mixOpacity(1);
+	&:hover{.mixOpacity(@v);}
+}
+
+body{margin:0px;padding:0px;}
+x{display:block;}
+label{display:block;font-weight:inherit;position:relative;}
+textarea{max-width: 100%;resize: vertical;}
+input,textarea,select{
+	&[required]{
+		.mixDuration(0.5s);
+		.mix(transition-property,border);
+	}
+}
+form:hover{input,textarea,select{&[required].ng-invalid{border-color:#F00;}}}
+.clear,[class*='row']{&:after{content:" ";clear:both;display:table;}}
+a{
+	.mixAll({text-decoration:none;color:#000;cursor:pointer;});
+    .hOpacity(0.7);
+    outline:none;
+}
+
+.spinnerFrames(){
+    from {.mix(transform,~'rotateZ(0deg)');}
+    to {.mix(transform,~'rotateZ(360deg)');}
+}
+.mixFrames(spinnerAnimate,{.spinnerFrames()});
+.fa-spinner{
+    .mix(animation,spinnerAnimate 3s infinite linear);
+	position:relative;
+	top:1px;
+}
+.glyphicon-refresh.active{
+    .mix(animation,spinnerAnimate 3s infinite linear);
+    position:relative;
+}
+
+.mixProp(~'.tbl',{display:table;&>*{float:none;display:table-cell;vertical-align:middle;}});
+.mixProp(~'.tl',{text-align:left;});
+.mixProp(~'.tc',{text-align:center;});
+.mixProp(~'.tr',{text-align:right;});
+.mixProp(~'.lt',{float:left;});
+.mixProp(~'.ct',{margin-left:auto;margin-right:auto;});
+.mixProp(~'.rt',{float:right;});
+.mixProp(~'.w',{width:100%;});
+.mixProp(~'.h',{height:100%;});
+.mixProp(~'.relative',{position:relative;});
+.mixProp(~'.absolute',{position:absolute;});
+
+//.mixRow(5);
+.mixMG(10);
+.mixPD(10);
+
+.mixFS(22);
+
+
+.mixR(3);
+
+.bord1{border:solid 1px #ccc;}
+
+.mixBtn{
+    .mixSelectNo;
+    .mixDuration(0.25s);
+    position:relative;
+    display:block;
+    text-align:center;
+    cursor:pointer;
+    &[disabled]{cursor: not-allowed;opacity:0.7;}
+    &:not(button){
+        display:table;
+        &>*{
+			.mixLinear(~'to bottom, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.0) 100%');
+            display:table-cell;
+            vertical-align:middle;
+            position:relative;
+        }
+    }
+}
+.btn1{
+    .mixAll({color:#FFF;});
+    border-radius:3px;
+    border:none;
+    background-color: #565656;
+    border-bottom: solid 3px #343434;
+    height:48px;
+    font-weight:normal;
+    font-size:16px;
+    &>*{padding: 0px 20px;}
+    &:not(button){&>*{border-radius:3px; top:1px;}}
+    i{
+        .mixDuration(0.25s);
+        font-size:24px;
+        display:block;
+        position:relative;
+        top:1px;
+        &.fa-vk{
+            font-size:20px;
+            top:0px;
+        }
+    }
+    &:hover{
+        .mixOpacity(1);
+        background-color: #464646;
+        i.fa-long-arrow-right{.mixTrans(10px,0px);}
+        i.glyphicon-chevron-down{.mixTrans(0px,5px);}
+    }
+    &.vk{
+        background-color:#5b89dc;
+		border-bottom: solid 3px #3b69bc;
+        &:hover{background-color:#4b79cc;}
+    }
+    &.green{
+        background-color:#58ba47;
+		border-bottom: solid 3px #389a27;
+        &:hover{background-color:#48aa37}
+    }
+    &.fb{
+        background-color:#3b5998;
+		border-bottom: solid 3px #1b3978;
+        &:hover{background-color:#2b4988;}
+    }
+}
+
+.progress1{
+    .mixDuration(1.0s);
+    position:absolute;
+    top:-1px;
+    left:0px;
+    bottom:-2px;
+    right:100%;
+    background-color:#58ba47;
+	border-bottom: solid 3px #389a27;
+	border-radius:3px;
+}
+
+</script>
+</head>
+<body>
+<x class="inner">
+	<x class="container">
+		<x class="tbl w" style="height:100vh;">
+			<x>
+				<x class="bord1 pd10h r3" 
+				ng-controller="ScopeCtrl" ng-init="s = loader({src:{
+					url: 'assets/files/nwjs-v0.12.3-win-ia32.zip'
+				}});">
+					<x class="mg10t">
+						<x class="mg10b">
+							<label>
+								<input class="form-control input-lg" 
+								placeholder="URL*" ng-model="s.src.url" required />
+							</label>
+						</x>
+						<x class="mg10b">
+							<label>
+								<input class="form-control input-lg" 
+								placeholder="Имя файла" ng-model="s.src.name" required />
+							</label>
+						</x>
+						<x class="mg10b">
+							<a class="mixBtn btn1 w relative" ng-click="s.loading || s.run({delay:3000,wait:1000});">
+								<x>
+								    <x class="progress1" ng-style="{right:(100 - s.dst.percent) + '%'}"></x>
+									<x class="tbl ct f22 relative z1">
+										<x>
+											<span ng-bind="if(s.loading,'Загрузка','Скачать')">Скачать</span>
+											<span ng-if="s.loading">
+											    <span ng-bind="s.dst.percent">0</span>%
+											</span>
+										</x>
+										<x><i class="glyphicon glyphicon-save mg10l" ng-class="{
+											'glyphicon-refresh active': s.loading,
+											'glyphicon-save': !s.loading
+										}"></i></x>
+									</x>
+								</x>
+							</a>
+						</x>
+						<x class="mg10b" ng-if="s.loading">
+							<a class="mixBtn btn1 w" ng-click="s.cancel()"><x>Отмена</x></a>
+						</x>
+					</x>
+				</x>
+			</x>
+		</x>
+		
+	</x>
+</x>
+<x id="scripts">
+<script src="assets/js/jquery-3.0.0.min.js"></script>
+<script src="assets/js/less.min.js"></script>
+<script src="assets/js/angular.min.js"></script>
+<script src="assets/js/dl.js"></script>
+<script src="../dl.download.js"></script>
+<script src="assets/js/main.js"></script>
+</x>
+</body>
+</html>
