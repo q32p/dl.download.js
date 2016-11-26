@@ -32,12 +32,12 @@ app.run(['$rootScope',function($rootScope){
 	}, loader = $rootScope.loader = function(options){
 		options = objectval(options);
 		var s = { src: objectval(options.src), loading: 0 }, c, 
-		dst = s.dst = {};
+		dst = s.dst = {percent:0,offset:0,total:0,k:0};
 		cancel = s.cancel = function(){
 			if(is_func(c))c();
 			s.loading = 0;
 			dst.percent = dst.offset = 0;
-			dst.total = 1000;			
+			dst.total = 0;			
 		}, 
 		runOptions = {}, args = [], callback = function(success,filename,url){
 			args = arguments;
@@ -50,8 +50,9 @@ app.run(['$rootScope',function($rootScope){
 			(e.lengthComputable ? (' из ' + e.total) : '. Общий объем неизвестен' ) );
 			
 			var 
+			lengthComputable = dst.lengthComputable = e.lengthComputable,
 			offset = dst.offset = e.loaded,
-			total = dst.total = e.lengthComputable ? e.total : ( 10000 + offset ),
+			total = dst.total = lengthComputable ? e.total : ( 10000 + offset ),
 			k = dst.k = offset / total;
 			dst.percent = (100 * k).toFixed(2);
 			apply();
@@ -75,6 +76,7 @@ app.run(['$rootScope',function($rootScope){
 			runOptions = objectval(options);
 			cancel();
 			s.loading = 1;
+			dst.total = 10000;
 			var src = objectval(s.src);
 			waitt.run(runOptions.wait);
 			c = dl.download(src.url, callback, progress, src.name);

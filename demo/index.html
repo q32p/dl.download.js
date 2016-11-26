@@ -141,7 +141,10 @@ a{
     display:block;
     text-align:center;
     cursor:pointer;
-    &[disabled]{cursor: not-allowed;opacity:0.7;}
+    &[disabled]{
+        cursor: not-allowed;
+        &:not(.act){opacity:0.7;}
+    }
     &:not(button){
         display:table;
         &>*{
@@ -233,8 +236,12 @@ a{
 								placeholder="Имя файла" ng-model="s.src.name" required />
 							</label>
 						</x>
+						<x class="mg10b" >
+						    <x ng-if="s.dst.lengthComputable">Скачано <span ng-bind="(s.dst.offset / 1048576).toFixed(3)"></span> Мб из <span ng-bind="(s.dst.total / 1048576).toFixed(3)"></span> Мб</x>
+						    <x ng-if="!s.dst.lengthComputable">Скачано <span ng-bind="(s.dst.offset / 1048576).toFixed(3)"></span> Мб. Объем файла неизвестен.</x>
+						</x>
 						<x class="mg10b">
-							<a class="mixBtn btn1 w relative" ng-click="s.loading || s.run({delay:3000,wait:1000});">
+							<a class="mixBtn btn1 w relative act" ng-click="s.loading || s.run({delay:3000,wait:1000});" ng-disabled="s.loading">
 								<x>
 								    <x class="progress1" ng-style="{right:(100 - s.dst.percent) + '%'}"></x>
 									<x class="tbl ct f22 relative z1">
